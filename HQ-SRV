@@ -23,7 +23,6 @@ passwd sshuser
     P@ssword
 usermod -aG wheel sshuser
 
-# 
 vim /etc/sudoers
     sshuser ALL=(ALL) NOPASSWD:ALL
 
