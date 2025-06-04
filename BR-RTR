@@ -48,6 +48,9 @@ router ospf
     passive interface default
     no passive interface tunnel.0
 
+ip nat pool brbublik 192.168.2.1-192.168.2.31
+ip nat source dynamic inside-to-outside pool brbublik overload interface ve0
+
 ip route 0.0.0.0/0 172.16.5.1
 
 exit 
