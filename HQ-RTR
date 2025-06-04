@@ -69,7 +69,7 @@ router ospf
     exit
 
 ip nat pool hqbublik 192.168.1.1-192.168.1.63,192.168.1.65-192.168.1.79
-ip nat source dynamic inside-to-outside pool natbublik overload interface ve0
+ip nat source dynamic inside-to-outside pool hqbublik overload interface ve0
 
 ip route 0.0.0.0/0 172.16.4.1
 
