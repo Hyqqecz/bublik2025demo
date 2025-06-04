@@ -112,6 +112,7 @@ vim 1.168.192.in-addr.arpa
 
 rndc-confgen > /var/lib/bind/etc/rndc.key
 sed -i ‘6,$d’ /var/lib/bind/etc/rndc.key
+# данная команда удаляет всё из файла начиная с 6 строки
 
 # проверка корректности конфигураций
 # named-checkconf
