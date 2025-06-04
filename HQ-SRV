@@ -41,3 +41,86 @@ vim /etc/openssh/bannermotd
     Authorized access only
 
 systemctl enable --now sshd
+
+apt-get update && apt-get install bind bind-utils -y
+
+
+# DNS - я его еще не настраивал, но пример конфигурации ниже
+# я хз какой путь к файлу, надеюсь такой
+vim /var/lib/bind/etc/options.conf
+# Приводим эти строки к такому виду
+    listen-on {192.168.1.2;};
+    listen-on-v6 {none;};
+    forwarder {77.88.8.8;};
+    allow-query {192.168.1.0/26; 192.168.1.64/28; 192.168.0.0/27;};
+        # по идее можно сократить и не писать ip адреса
+        # listen-on {any;}; - по идее так можно
+        # allow-query {any;};
+
+vim /var/lib/bind/etc/rfc1912.conf
+    # Добавляем
+    zone "au-team.irpo" {
+        type master 
+        file "au-team.irpo";
+    };
+    zone "1.168.192.in-addr.arpa" {
+        type master 
+        file "1.168.192.in-addr.arpa";
+    };
+
+cd /var/lib/bind/etc/zone
+cp empty au-team.irpo
+cp empty 1.168.192.in-addr.arpa
+
+vim au-team.irpo
+    $TTL    1D
+    @       IN      SOA     au-team.irpo. root.au-team.irpo. (
+                                    2025102200      ; serial
+                                    12H             ; refresh
+                                    1H              ; retry
+                                    1W              ; expire
+                                    1H              ; ncache
+                            )
+            IN      NS      au-team.irpo.
+            IN      A       192.168.1.2
+    hq-rtr  IN      A       192.168.1.1
+    hq-rtr  IN      A       192.168.1.65
+    br-rtr  IN      A       192.168.2.1
+    hq-srv  IN      A       192.168.1.2
+    hq-cli  IN      A       192.168.1.66
+    br-srv  IN      A       192.168.2.2
+    moodle  IN      CNAME   hq-rtr
+    wiki    IN      CNAME   hq-rtr
+
+vim 1.168.192.in-addr.arpa
+    $TTL    1D
+    @       IN      SOA     au-team.irpo. root.au-team.irpo. (
+                                    2025102201      ; serial
+                                    12H             ; refresh
+                                    1H              ; retry
+                                    1W              ; expire
+                                    1H              ; ncache
+                            )
+            IN      NS      au-team.irpo.
+    1       IN      PTR     hq-rtr.au-team.irpo.
+    65      IN      PTR     hq-rtr.au-team.irpo.
+    1       IN      PTR     hq-rtr.au-team.irpo.
+    2       IN      PTR     hq-srv.au-team.irpo.
+    66      IN      PTR     hq-cli.au-team.irpo.
+
+
+rndc-confgen > /var/lib/bind/etc/rndc.key
+sed -i ‘6,$d’ /var/lib/bind/etc/rndc.key
+
+# проверка корректности конфигураций
+# named-checkconf
+# named-checkconf -z
+
+systemctl enable --now bind.service
+
+# проверка записи A
+# host hq-rtr.au-team.irpo
+# проверка записи CNAME
+# host wiki.au-team.irpo
+# проверка записи PTR
+# host 192.168.1.1
