@@ -1,0 +1,74 @@
+# ve0 - isp
+# ve1 - hq-srv hq-cli
+
+conf t
+
+hostname HQ-RTR
+ip domain-name au-team.irpo
+
+username net_admin 
+    password P@$$word
+    role admin
+
+ntp timezone utc+3
+
+ip pool bublik 192.168.1.66-192.168.78
+ip dhcp-server 1
+    pool bublik
+        mask 28
+        gateway 192.168.1.65
+
+int isp
+    ip add 172.16.4.2/28
+    ip nat outside
+    exit
+
+int srv
+    ip add 192.168.1.1/26
+    ip nat inside
+    exit
+
+int cli
+    ip add 192.168.1.65/28
+    ip nat inside
+    dhcp-server 1
+    exit
+
+port ve0
+    service-instance isp
+        encapsulation untagget
+        connect ip isp
+        exit 
+    exit
+
+port ve1
+    service-instance srv
+        encapsulation dot1q 100 exact
+        rewrite pop 1
+        connect ip srv
+        exit
+    service-instance cli
+        encapsulation dot1q 200 exact
+        rewrite pop 1
+        connect ip srv
+        exit  
+    exit
+
+int tunnel.0
+    ip add 172.16.0.2/28
+    ip tunnel 172.16.4.2 172.16.5.2 mode gre
+    ip ospf authentication-key P@ssw0rd
+    exit
+    
+router ospf
+    network 192.168.1.0/26 area 1
+    network 192.168.1.64/26 area 1
+    network 172.16.0.0/28 area 1
+    passive interface default
+    no passive interface tunnel.0
+    exit
+
+ip route 0.0.0.0/0 172.16.4.1
+
+exit
+wr mem

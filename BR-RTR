@@ -1,0 +1,54 @@
+# ve0 - isp
+# ve1 - br-srv
+
+conf t
+
+hostname BR-RTR
+ip domain-name au-team.irpo
+
+username net_admin 
+    password P@$$word
+    role admin
+
+ntp timezone utc+3
+
+int isp
+    ip add 172.16.5.2/28
+    ip nat outside
+    exit
+
+int srv
+    ip add 192.168.2.1/27
+    ip nat inside
+    exit
+
+port ve0
+    service-instance isp
+        encapsulation untagget
+        connect ip isp
+        exit 
+    exit
+
+port ve1
+    service-instance srv
+        encapsulation untagget
+        connect ip srv
+        exit 
+    exit
+
+int tunnel.0
+    ip add 172.16.0.2/28
+    ip tunnel 172.16.5.2 172.16.4.2 mode gre
+    ip ospf authentication-key P@ssw0rd
+    exit
+    
+router ospf
+    network 192.168.2.0/27 area 1
+    network 172.16.0.0/28 area 1
+    passive interface default
+    no passive interface tunnel.0
+
+ip route 0.0.0.0/0 172.16.5.1
+
+exit 
+wr mem
