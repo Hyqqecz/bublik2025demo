@@ -28,7 +28,7 @@ vim /etc/sudoers
     sshuser ALL=(ALL) NOPASSWD:ALL
 
 vim /etc/net/openssh/sshd_config
-# Приводим к такому виду
+# Приводим эти строки к такому виду
     Port 2024
     MaxAuthTries 2
     PasswordAuthentication yes
