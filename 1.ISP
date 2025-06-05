@@ -2,9 +2,10 @@
 # ens19 - HQ-RTR
 # ens20 - BR-RTR
 
+# vim /etc/sysconfig/network
+#     hostname=ISP
+
 hostnamectl set-hostname ISP
-vim /etc/sysconfig/network
-    hostname=ISP
 exec bash
 
 timedatactl set-timezone Europe/Moscow
