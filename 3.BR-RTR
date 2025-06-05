@@ -1,5 +1,5 @@
-# ve0 - isp
-# ve1 - br-srv
+# te0 - isp
+# te1 - br-srv
 
 conf t
 
