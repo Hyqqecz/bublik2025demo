@@ -11,7 +11,7 @@ exec bash
 timedatactl set-timezone Europe/Moscow
 
 cd /etc/net/ifaces
-mkdir ens{19,20}
+mkdir ens19 ens20
 
 vim ens19/options
     TYPE=eth
