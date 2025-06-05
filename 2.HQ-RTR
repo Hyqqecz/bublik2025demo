@@ -39,7 +39,7 @@ int cli
 port ve0
     service-instance isp
         encapsulation untagget
-        connect ip isp
+        connect ip interface isp
         exit 
     exit
 
