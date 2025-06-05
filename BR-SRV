@@ -1,4 +1,4 @@
-# vim /etc/sysconfig/network - как я понял, тут менять не обязательно
+# vim /etc/sysconfig/network - 
 #    username=BR-SRV.au-team.irpo
 
 hostnamectl set-hostname BR-SRV.au-team.irpo
