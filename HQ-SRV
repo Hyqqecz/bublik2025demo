@@ -1,7 +1,7 @@
-# vim /etc/sysconfig/network - как я понял, тут менять не обязательно
-#    username=HQ-SRV.au-team.irpo
+# vim /etc/sysconfig/network
+#    username=hq-srv.au-team.irpo
 
-hostnamectl set-hostname HQ-SRV.au-team.irpo
+hostnamectl set-hostname hq-srv.au-team.irpo
 exec bash
 
 timedatactl set-timezone Europe/Moscow
@@ -32,33 +32,28 @@ vim /etc/net/openssh/sshd_config
     Port 2024
     MaxAuthTries 2
     PasswordAuthentication yes
-    # В параметре AllowUsers вместо пробела используется Tab
     # По идее анологично можно вместо AllowUsers    sshuser найти параметр с AllowGroups или типа такого и разрешить группу wheel
     AllowUsers  sshuser
     Banner /etc/openssh/bannermotd
 
 vim /etc/openssh/bannermotd
-    # Сама надпись написана в задании 5, её заучивать не нужно
     Authorized access only
 
 systemctl enable --now sshd
 
 apt-get update && apt-get install bind bind-utils -y
 
-
-# DNS - я его еще не настраивал, но пример конфигурации ниже
-# я хз какой путь к файлу, надеюсь такой
-vim /var/lib/bind/etc/options.conf
+vim /etc/bind/options.conf
 # Приводим эти строки к такому виду
     listen-on {192.168.1.2;};
     listen-on-v6 {none;};
     forwarder {77.88.8.8;};
-    allow-query {192.168.1.0/26; 192.168.1.64/28; 192.168.0.0/27;};
+    allow-query {192.168.1.0/26; 192.168.1.64/28; 192.168.2.0/27;};
         # по идее можно сократить и не писать ip адреса
         # listen-on {any;}; - по идее так можно
-        # allow-query {any;};
+        # allow-query {any;}; - тут точно так можно, я проверял
 
-vim /var/lib/bind/etc/rfc1912.conf
+vim /var/lib/bind/etc/local.conf
     # Добавляем
     zone "au-team.irpo" {
         type master 
@@ -69,9 +64,11 @@ vim /var/lib/bind/etc/rfc1912.conf
         file "1.168.192.in-addr.arpa";
     };
 
-cd /var/lib/bind/etc/zone
-cp empty au-team.irpo
-cp empty 1.168.192.in-addr.arpa
+cd /etc/bind/zone
+
+# там есть какие то конфигурации или примеры конфигураций, че нить годное копируем и редактируем
+cp localhost au-team.irpo
+cp localhost 1.168.192.in-addr.arpa
 
 vim au-team.irpo
     $TTL    1D
@@ -90,8 +87,8 @@ vim au-team.irpo
     hq-srv  IN      A       192.168.1.2
     hq-cli  IN      A       192.168.1.66
     br-srv  IN      A       192.168.2.2
-    moodle  IN      CNAME   hq-rtr
-    wiki    IN      CNAME   hq-rtr
+    moodle  IN      CNAME   hq-rtr.au-team.irpo.
+    wiki    IN      CNAME   hq-rtr.au-team.irpo.
 
 vim 1.168.192.in-addr.arpa
     $TTL    1D
@@ -109,9 +106,9 @@ vim 1.168.192.in-addr.arpa
     2       IN      PTR     hq-srv.au-team.irpo.
     66      IN      PTR     hq-cli.au-team.irpo.
 
-
-rndc-confgen > /var/lib/bind/etc/rndc.key
-sed -i ‘6,$d’ /var/lib/bind/etc/rndc.key
+# Вася сказал это не обязательно
+# rndc-confgen > /var/lib/bind/etc/rndc.key
+# sed -i ‘6,$d’ /var/lib/bind/etc/rndc.key
 # данная команда удаляет всё из файла начиная с 6 строки
 
 # проверка корректности конфигураций
@@ -122,6 +119,7 @@ systemctl enable --now bind.service
 
 # проверка записи A
 # host hq-rtr.au-team.irpo
+# host hq-cli.au-team.irpo
 # проверка записи CNAME
 # host wiki.au-team.irpo
 # проверка записи PTR
