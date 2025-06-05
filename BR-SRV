@@ -16,6 +16,9 @@ vim /etc/net/ifaces/ens18/ipv4address
     192.168.2.2/27
 vim /etc/net/ifaces/ens18/ipv4route
     default via 192.168.2.1
+vim /etc/net/ifaces/ens18/resolv.conf
+    search au-team.irpo
+    nameserver 192.168.1.2
 
 systemctl restart network
 
@@ -32,13 +35,11 @@ vim /etc/net/openssh/sshd_config
     Port 2024
     MaxAuthTries 2
     PasswordAuthentication yes
-    # В параметре AllowUsers вместо пробела используется Tab
     # По идее анологично можно вместо sshuser найти параметр с AllowGroups или типа такого и разрешить группу wheel
     AllowUsers  sshuser
     Banner /etc/openssh/bannermotd
 
 vim /etc/openssh/bannermotd
-    # Сама надпись написана в задании 5, её заучивать не нужно
     Authorized access only
 
 systemctl enable --now sshd
