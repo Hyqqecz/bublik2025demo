@@ -45,12 +45,12 @@ port ve1
     service-instance srv
         encapsulation dot1q 100 exact
         rewrite pop 1
-        connect ip srv
+        connect ip interface srv
         exit
     service-instance cli
         encapsulation dot1q 200 exact
         rewrite pop 1
-        connect ip srv
+        connect ip interface srv
         exit  
     exit
 
