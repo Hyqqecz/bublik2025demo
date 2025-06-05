@@ -1,5 +1,5 @@
-# ve0 - isp
-# ve1 - hq-srv hq-cli
+# te0 - isp
+# te1 - hq-srv hq-cli
 
 conf t
 
