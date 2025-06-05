@@ -8,8 +8,6 @@
 hostnamectl set-hostname ISP
 exec bash
 
-timedatactl set-timezone Europe/Moscow
-
 cd /etc/net/ifaces
 mkdir ens19 ens20
 
@@ -35,7 +33,7 @@ apt-get update && apt-get install iptables -y
 # iptables -X
 # iptables -F
 # iptables -t nat -X
-# iptables -t nat F
+# iptables -t nat -F
 
 iptables iptables -t nat -A POSTROUTING -s 172.16.4.2 -o ens18 -j MASQUERADE
 iptables iptables -t nat -A POSTROUTING -s 172.16.5.2 -o ens18 -j MASQUERADE
