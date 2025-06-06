@@ -106,6 +106,10 @@ vim 1.168.192.in-addr.arpa
     2       IN      PTR     hq-srv.au-team.irpo.
     66      IN      PTR     hq-cli.au-team.irpo.
 
+
+systemctl enable --now bind.service
+
+
 # Вася сказал это не обязательно
 # rndc-confgen > /var/lib/bind/etc/rndc.key
 # sed -i ‘6,$d’ /var/lib/bind/etc/rndc.key
@@ -114,8 +118,6 @@ vim 1.168.192.in-addr.arpa
 # проверка корректности конфигураций
 # named-checkconf
 # named-checkconf -z
-
-systemctl enable --now bind.service
 
 # проверка записи A
 # host hq-rtr.au-team.irpo
