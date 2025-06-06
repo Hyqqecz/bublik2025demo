@@ -1,7 +1,7 @@
 # vim /etc/sysconfig/network - как я понял, тут менять не обязательно
-#    username=HQ-SRV.au-team.irpo
+#    username=hq-cli.au-team.irpo
 
-hostnamectl set-hostname HQ-CLI.au-team.irpo
+hostnamectl set-hostname hq-cli.au-team.irpo
 exec bash
 
 timedatactl set-timezone Europe/Moscow
