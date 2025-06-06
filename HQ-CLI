@@ -12,7 +12,7 @@ timedatactl set-timezone Europe/Moscow
 #   BOOTPROTO=dhcp
 #   DISABLE=no
 
-# По идее маршрут по умолчанию и днс сервер передается по DHCP, но можно навер и прописать это
+# По идее маршрут по умолчанию и днс сервер передается по DHCP, но лучше наверн и прописать это
 #vim /etc/net/ifaces/ens18/ipv4route
 #    default via 192.168.1.65
 # vim /etc/net/ifaces/ens18/resolv.conf
